@@ -136,7 +136,20 @@ else:
 print(prediction)
 ```
 
+## Results
 
+The model achieved the following performance metrics on the test set:
+
+- Accuracy: 85%
+
+
+## Contact
+Project Link: https://github.com/vurali/CatDogClassifier-CNN.git
+
+For any inquiries or feedback, please contact:
+
+- Name: Murali Krishna
+- Email: pulimurali07@gmail.com
 
 
 
