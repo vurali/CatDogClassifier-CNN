@@ -15,6 +15,6 @@ This project uses a Convolutional Neural Network (CNN) to classify images of cat
 ## Installation
 Clone the repository and install the required packages:
 ```bash
-git clone https://github.com/yourusername/CatDogClassifier-CNN.git
+git clone https://github.com/vurali/CatDogClassifier-CNN.git
 cd CatDogClassifier-CNN
 pip install -r requirements.txt
