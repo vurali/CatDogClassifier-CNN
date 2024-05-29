@@ -140,7 +140,7 @@ print(prediction)
 
 The model achieved the following performance metrics on the test set:
 
-- Accuracy: 85%
+- Accuracy: 92%
 
 
 ## Contact
@@ -150,15 +150,4 @@ For any inquiries or feedback, please contact:
 
 - Name: Murali Krishna
 - Email: pulimurali07@gmail.com
-
-
-
-
-
-
-
-
-
-
-
 
