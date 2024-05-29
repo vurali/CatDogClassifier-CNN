@@ -39,38 +39,71 @@ The notebook includes the following code for data preprocessing and model traini
 import tensorflow as tf
 from keras.api.preprocessing.image import ImageDataGenerator
 
-# Initialize the ImageDataGenerator with the specified augmentations
-train_datagen = ImageDataGenerator(rescale = 1./255,
-                                   shear_range = 0.2,
-                                   zoom_range = 0.2,
-                                   horizontal_flip = True)
-training_set = train_datagen.flow_from_directory('dataset/dataset/training_set',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 class_mode = 'binary')
+# Initialize the ImageDataGenerator for training with specified augmentations
+train_datagen = ImageDataGenerator(
+    rescale=1./255,        # Rescale pixel values to [0, 1]
+    shear_range=0.2,       # Apply random shear transformations
+    zoom_range=0.2,        # Apply random zoom transformations
+    horizontal_flip=True   # Randomly flip images horizontally
+)
 
-# Initialize the ImageDataGenerator for the test set
-test_datagen = ImageDataGenerator(rescale = 1./255)
-test_set = test_datagen.flow_from_directory('dataset/dataset/test_set',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            class_mode = 'binary')
+# Create an iterator for the training set
+training_set = train_datagen.flow_from_directory(
+    'dataset/dataset/training_set', # Path to the training set directory
+    target_size=(64, 64),           # Resize images to 64x64 pixels
+    batch_size=32,                  # Number of images to return in each batch
+    class_mode='binary'             # Binary classification mode (e.g., cats vs dogs)
+)
 
-# Build the CNN model
+# Initialize the ImageDataGenerator for the test set with rescaling only
+test_datagen = ImageDataGenerator(rescale=1./255) # Rescale pixel values to [0, 1]
+
+# Create an iterator for the test set
+test_set = test_datagen.flow_from_directory(
+    'dataset/dataset/test_set',    # Path to the test set directory
+    target_size=(64, 64),          # Resize images to 64x64 pixels
+    batch_size=32,                 # Number of images to return in each batch
+    class_mode='binary'            # Binary classification mode (e.g., cats vs dogs)
+)
+
+# Build the Convolutional Neural Network (CNN) model
 cnn = tf.keras.models.Sequential()
+
+# Add a convolutional layer with 32 filters, 3x3 kernel size, ReLU activation, and input shape 64x64x3
 cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', input_shape=[64, 64, 3]))
+
+# Add a max pooling layer with 2x2 pool size and stride of 2
 cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
+
+# Add another convolutional layer with 32 filters, 3x3 kernel size, and ReLU activation
 cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'))
+
+# Add another max pooling layer with 2x2 pool size and stride of 2
 cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
+
+# Flatten the input
 cnn.add(tf.keras.layers.Flatten())
+
+# Add a fully connected (dense) layer with 128 units and ReLU activation
 cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
+
+# Add the output layer with 1 unit and sigmoid activation for binary classification
 cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
 
-# Compile the model
-cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+# Compile the CNN model
+cnn.compile(
+    optimizer='adam',                # Use Adam optimizer
+    loss='binary_crossentropy',      # Use binary cross-entropy loss function
+    metrics=['accuracy']             # Evaluate model performance using accuracy
+)
 
-# Train the model
-cnn.fit(x = training_set, validation_data = test_set, epochs = 25)
+# Train the CNN model
+cnn.fit(
+    x=training_set,                 # Training data
+    validation_data=test_set,       # Validation data
+    epochs=25                       # Number of epochs to train the model
+)
+
 ```
 
 ### Making Predictions
@@ -79,16 +112,27 @@ The notebook also includes code to make predictions on new images:
 import numpy as np
 from keras.api.preprocessing import image
 
-test_image = image.load_img('dataset/dataset/cat_or_dog_2.jpg', target_size = (64, 64))
-test_image = image.img_to_array(test_image)
-test_image = np.expand_dims(test_image, axis = 0)
+# Load and preprocess the test image
+test_image = image.load_img(
+    'dataset/dataset/cat_or_dog_2.jpg', # Path to the image file
+    target_size=(64, 64)                # Resize image to 64x64 pixels to match model input
+)
+test_image = image.img_to_array(test_image) # Convert image to array format
+test_image = np.expand_dims(test_image, axis=0) # Add batch dimension since model expects a batch of images
+
+# Predict the class of the image using the trained CNN model
 result = cnn.predict(test_image)
-training_set.class_indices
+
+# Retrieve the class indices from the training set
+class_indices = training_set.class_indices
+
+# Interpret the prediction result
 if result[0][0] == 1:
     prediction = 'dog'
 else:
     prediction = 'cat'
 
+# Print the prediction
 print(prediction)
 ```
 
