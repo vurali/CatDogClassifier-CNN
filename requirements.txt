@@ -1,0 +1,7 @@
+### `requirements.txt`
+
+Make sure to include the required packages in your `requirements.txt`:
+
+tensorflow
+numpy
+keras
